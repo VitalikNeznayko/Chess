@@ -1,4 +1,13 @@
-using ChessGame.Classes;
+﻿using ChessGame.Classes;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ChessGame
 {
@@ -7,19 +16,28 @@ namespace ChessGame
         public MainForm()
         {
             InitializeComponent();
-            BoardPanel board = new BoardPanel();
-            ChessPanel.Controls.Add(board);
-            //Controls.Add(board);
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void btnNewGame_Click(object sender, EventArgs e)
         {
-
+            var gameForm = new GameForm();
+            gameForm.Show();
+            this.Hide();
         }
 
-        private void ChessPanel_Paint(object sender, PaintEventArgs e)
+        private void btnJoinLobby_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Функція підключення до лоббі ще в розробці.");
+        }
 
+        private void btnHistory_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Функція історії ще в розробці.");
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

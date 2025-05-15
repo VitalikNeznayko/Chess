@@ -12,7 +12,8 @@ namespace ChessGame.Classes
         private Position selectedPiece = null;
         private const int CoordinateOffset = 35; 
         private readonly Font coordinateFont = new Font("Arial", 12, FontStyle.Bold);
-        private readonly Brush backgroundBrush = new SolidBrush(Color.FromArgb(0xB7, 0xC0, 0xD8));
+        private readonly Brush backgroundBrush = new SolidBrush(Color.FromArgb(0xE8, 0xED, 0xF9));
+       
         public BoardPanel(int cellSize = 60)
         {
             this.cellSize = cellSize;
