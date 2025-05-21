@@ -20,7 +20,7 @@ namespace ChessGame
 
         private void btnNewGame_Click(object sender, EventArgs e)
         {
-            var gameForm = new GameForm();
+            var gameForm = new GameForm(SelectedTimerIndex);
             gameForm.Show();
             this.Hide();
         }
@@ -40,7 +40,7 @@ namespace ChessGame
         {
             Application.Exit();
         }
-
+        public string SelectedTimerIndex => cBTimer.Text;
         private void buttonBack_Click(object sender, EventArgs e)
         {
             panelSettings.Hide();

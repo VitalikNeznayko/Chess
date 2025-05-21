@@ -1,9 +1,10 @@
 ﻿using ChessGame.Classes.Pieces;
+using ChessGame.Classes;
 using System;
 using System.Windows.Forms;
 using System.Timers;
 
-namespace ChessGame.Classes
+namespace ChessGame
 {
 	public class ChessGame
 	{
@@ -25,8 +26,6 @@ namespace ChessGame.Classes
             GameEnded = false;
             InitializeBoard();
         }
-
-        
 
         public void RestartGame()
         {
@@ -220,15 +219,23 @@ namespace ChessGame.Classes
 				EndGame("Stalemate! The game is a draw.", boardPanel);
 			}
 		}
-        private void EndGame(string message, BoardPanel boardPanel)
-		{
-			GameEnded = true;
-			MessageBox.Show(message, "Game Over", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			if (MessageBox.Show("Would you like to start a new game?", "New Game", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-			{
-				RestartGame();
+        public void EndGame(string message, BoardPanel boardPanel)
+        {
+            GameEnded = true;
+            MessageBox.Show(message, "Game Over", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (MessageBox.Show("Would you like to start a new game?", "New Game", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                RestartGame();
 				boardPanel.Invalidate();
-			}
-		}
-	}
+                if (boardPanel.FindForm() is GameForm gameForm)
+                {
+                    gameForm.ResetTimers();
+                }
+                else
+                {
+                    MessageBox.Show("boardPanel.Parent is not GameForm");
+                }
+            }
+        }
+    }
 }

@@ -28,14 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             ChessPanel = new Panel();
             btnBackToMenu = new Button();
             name1 = new Label();
             name2 = new Label();
             panel1 = new Panel();
-            blackTimer = new Label();
+            blackTimerLabel = new Label();
             panel2 = new Panel();
-            whiteTimer = new Label();
+            whiteTimerLabel = new Label();
+            timer1 = new System.Windows.Forms.Timer(components);
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -68,7 +70,6 @@
             name1.Size = new Size(98, 25);
             name1.TabIndex = 2;
             name1.Text = "Гравець 1";
-            name1.Click += label1_Click;
             // 
             // name2
             // 
@@ -83,40 +84,40 @@
             // panel1
             // 
             panel1.BackColor = SystemColors.ControlLight;
-            panel1.Controls.Add(blackTimer);
+            panel1.Controls.Add(blackTimerLabel);
             panel1.Location = new Point(465, 3);
             panel1.Name = "panel1";
             panel1.Size = new Size(95, 40);
             panel1.TabIndex = 4;
             // 
-            // blackTimer
+            // blackTimerLabel
             // 
-            blackTimer.AutoSize = true;
-            blackTimer.Font = new Font("Segoe UI", 12F);
-            blackTimer.Location = new Point(18, 5);
-            blackTimer.Name = "blackTimer";
-            blackTimer.Size = new Size(60, 28);
-            blackTimer.TabIndex = 0;
-            blackTimer.Text = "00:00";
+            blackTimerLabel.AutoSize = true;
+            blackTimerLabel.Font = new Font("Segoe UI", 12F);
+            blackTimerLabel.Location = new Point(18, 5);
+            blackTimerLabel.Name = "blackTimerLabel";
+            blackTimerLabel.Size = new Size(60, 28);
+            blackTimerLabel.TabIndex = 0;
+            blackTimerLabel.Text = "00:00";
             // 
             // panel2
             // 
             panel2.BackColor = SystemColors.ControlLight;
-            panel2.Controls.Add(whiteTimer);
+            panel2.Controls.Add(whiteTimerLabel);
             panel2.Location = new Point(465, 605);
             panel2.Name = "panel2";
             panel2.Size = new Size(95, 40);
             panel2.TabIndex = 5;
             // 
-            // whiteTimer
+            // whiteTimerLabel
             // 
-            whiteTimer.AutoSize = true;
-            whiteTimer.Font = new Font("Segoe UI", 12F);
-            whiteTimer.Location = new Point(18, 5);
-            whiteTimer.Name = "whiteTimer";
-            whiteTimer.Size = new Size(60, 28);
-            whiteTimer.TabIndex = 0;
-            whiteTimer.Text = "00:00";
+            whiteTimerLabel.AutoSize = true;
+            whiteTimerLabel.Font = new Font("Segoe UI", 12F);
+            whiteTimerLabel.Location = new Point(18, 5);
+            whiteTimerLabel.Name = "whiteTimerLabel";
+            whiteTimerLabel.Size = new Size(60, 28);
+            whiteTimerLabel.TabIndex = 0;
+            whiteTimerLabel.Text = "00:00";
             // 
             // GameForm
             // 
@@ -149,8 +150,9 @@
         private Label name1;
         private Label name2;
         private Panel panel1;
-        private Label blackTimer;
+        private Label blackTimerLabel;
         private Panel panel2;
-        private Label whiteTimer;
+        private Label whiteTimerLabel;
+        private System.Windows.Forms.Timer timer1;
     }
 }

@@ -131,21 +131,23 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(33, 95);
+            label3.Font = new Font("Segoe UI", 11F);
+            label3.Location = new Point(24, 90);
             label3.Name = "label3";
-            label3.Size = new Size(83, 20);
+            label3.Size = new Size(104, 25);
             label3.TabIndex = 7;
             label3.Text = "Select time";
             // 
             // cBTimer
             // 
+            cBTimer.Font = new Font("Segoe UI", 10F);
             cBTimer.FormattingEnabled = true;
-            cBTimer.Items.AddRange(new object[] { "Рапід (10 хв)", "Бліц (5 хв)", "Пуля (1 хв)" });
-            cBTimer.Location = new Point(33, 118);
+            cBTimer.Items.AddRange(new object[] { "10 хв", "5 хв", "1 хв" });
+            cBTimer.Location = new Point(24, 118);
             cBTimer.Name = "cBTimer";
-            cBTimer.Size = new Size(206, 28);
+            cBTimer.Size = new Size(228, 31);
             cBTimer.TabIndex = 6;
-            cBTimer.Text = "Рапід (10 хв)";
+            cBTimer.Text = "10 хв";
             // 
             // label2
             // 
