@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+
 namespace ChessGame.Classes
 {
     public class BoardPanel : Panel
