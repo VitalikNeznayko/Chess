@@ -20,14 +20,15 @@ namespace ChessGame
 
         private void btnNewGame_Click(object sender, EventArgs e)
         {
-            var gameForm = new GameForm();
+            var gameForm = new GameForm(SelectedTimerIndex);
             gameForm.Show();
             this.Hide();
         }
 
-        private void btnJoinLobby_Click(object sender, EventArgs e)
+        private void btnSettings_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Функція підключення до лоббі ще в розробці.");
+            panelMain.Hide();
+            panelSettings.Show();
         }
 
         private void btnHistory_Click(object sender, EventArgs e)
@@ -38,6 +39,12 @@ namespace ChessGame
         private void btnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+        public string SelectedTimerIndex => cBTimer.Text;
+        private void buttonBack_Click(object sender, EventArgs e)
+        {
+            panelSettings.Hide();
+            panelMain.Show();
         }
     }
 }

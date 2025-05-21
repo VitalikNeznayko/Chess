@@ -1,7 +1,9 @@
 ﻿using ChessGame.Classes.Pieces;
+using ChessGame;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+
 
 namespace ChessGame.Classes
 {
