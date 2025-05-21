@@ -4,12 +4,11 @@ using System.Xml.Linq;
 
 public class King : Piece
 {
-	public King(Position position, bool isWhite) : base(position, isWhite)
+	public King(Position position, bool isWhite, Image icon) : base(position, isWhite)
 	{
 		Name = "King";
-		string imagePath = isWhite ? "assets/WhiteKing.png" : "assets/BlackKing.png";
-		Icon = Image.FromFile(imagePath);
-	}
+        Icon = icon;
+    }
 
 	public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
 	{

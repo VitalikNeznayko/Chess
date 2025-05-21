@@ -9,12 +9,11 @@ namespace ChessGame.Classes.Pieces
 {
 	public class Pawn : Piece
 	{
-		public Pawn(Position position, bool isWhite) : base(position, isWhite)
+		public Pawn(Position position, bool isWhite, Image icon) : base(position, isWhite)
 		{
 			Name = "Pawn";
-			string imagePath = isWhite ? "assets/WhitePawn.png" : "assets/BlackPawn.png";
-			Icon = Image.FromFile(imagePath);
-		}
+            Icon = icon;
+        }
 
 		public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
 		{

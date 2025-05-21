@@ -16,7 +16,7 @@ namespace ChessGame
 		public Position BlackKingPos;
 		public bool GameEnded;
 		private const int Size = 8;
-
+        private readonly PieceFactory _pieceFactory;
 
         private ChessGame()
         {
@@ -24,6 +24,7 @@ namespace ChessGame
             IsWhiteTurn = true;
             LastMove = null;
             GameEnded = false;
+            _pieceFactory = new PieceFactory();
             InitializeBoard();
         }
 
@@ -58,44 +59,31 @@ namespace ChessGame
 
 		private void InitializeBoard()
 		{
-            Board[1, 0] = new Pawn(new Position(0, 1), false);
-            Board[1, 1] = new Pawn(new Position(1, 1), false);
-            Board[1, 2] = new Pawn(new Position(2, 1), false);
-            Board[1, 3] = new Pawn(new Position(3, 1), false);
-            Board[1, 4] = new Pawn(new Position(4, 1), false);
-            Board[1, 5] = new Pawn(new Position(5, 1), false);
-            Board[1, 6] = new Pawn(new Position(6, 1), false);
-            Board[1, 7] = new Pawn(new Position(7, 1), false);
+            for (int col = 0; col < Size; col++)
+            {
+                Board[1, col] = _pieceFactory.CreatePiece(PieceType.Pawn, new Position(col, 1), false);
+                Board[6, col] = _pieceFactory.CreatePiece(PieceType.Pawn, new Position(col, 6), true);
+            }
 
-            Board[0, 0] = new Rook(new Position(0, 0), false);
-			Board[0, 1] = new Knight(new Position(1, 0), false);
-			Board[0, 2] = new Bishop(new Position(2, 0), false);
-			Board[0, 3] = new Queen(new Position(3, 0), false);
-			Board[0, 4] = new King(new Position(4, 0), false);
-			Board[0, 5] = new Bishop(new Position(5, 0), false);
-			Board[0, 6] = new Knight(new Position(6, 0), false);
-			Board[0, 7] = new Rook(new Position(7, 0), false);
+            Board[0, 0] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(0, 0), false);
+            Board[0, 1] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(1, 0), false);
+            Board[0, 2] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(2, 0), false);
+            Board[0, 3] = _pieceFactory.CreatePiece(PieceType.Queen, new Position(3, 0), false);
+            Board[0, 4] = _pieceFactory.CreatePiece(PieceType.King, new Position(4, 0), false);
+            Board[0, 5] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(5, 0), false);
+            Board[0, 6] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(6, 0), false);
+            Board[0, 7] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(7, 0), false);
 
+            Board[7, 0] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(0, 7), true);
+            Board[7, 1] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(1, 7), true);
+            Board[7, 2] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(2, 7), true);
+            Board[7, 3] = _pieceFactory.CreatePiece(PieceType.Queen, new Position(3, 7), true);
+            Board[7, 4] = _pieceFactory.CreatePiece(PieceType.King, new Position(4, 7), true);
+            Board[7, 5] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(5, 7), true);
+            Board[7, 6] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(6, 7), true);
+            Board[7, 7] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(7, 7), true);
 
-            Board[6, 0] = new Pawn(new Position(0, 6), true);
-            Board[6, 1] = new Pawn(new Position(1, 6), true);
-            Board[6, 2] = new Pawn(new Position(2, 6), true);
-            Board[6, 3] = new Pawn(new Position(3, 6), true);
-            Board[6, 4] = new Pawn(new Position(4, 6), true);
-            Board[6, 5] = new Pawn(new Position(5, 6), true);
-            Board[6, 6] = new Pawn(new Position(6, 6), true);
-            Board[6, 7] = new Pawn(new Position(7, 6), true);
-
-            Board[7, 0] = new Rook(new Position(0, 7), true);
-			Board[7, 1] = new Knight(new Position(1, 7), true);
-			Board[7, 2] = new Bishop(new Position(2, 7), true);
-			Board[7, 3] = new Queen(new Position(3, 7), true);
-			Board[7, 4] = new King(new Position(4, 7), true);
-			Board[7, 5] = new Bishop(new Position(5, 7), true);
-			Board[7, 6] = new Knight(new Position(6, 7), true);
-			Board[7, 7] = new Rook(new Position(7, 7), true);
-
-			WhiteKingPos = new Position(4, 7);
+            WhiteKingPos = new Position(4, 7);
 			BlackKingPos = new Position(4, 0);
 		}
 
