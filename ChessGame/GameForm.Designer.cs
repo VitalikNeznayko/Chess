@@ -30,12 +30,12 @@
         {
             ChessPanel = new Panel();
             btnBackToMenu = new Button();
-            label1 = new Label();
-            label2 = new Label();
+            name1 = new Label();
+            name2 = new Label();
             panel1 = new Panel();
-            label3 = new Label();
+            blackTimer = new Label();
             panel2 = new Panel();
-            label4 = new Label();
+            whiteTimer = new Label();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -59,62 +59,64 @@
             btnBackToMenu.UseVisualStyleBackColor = true;
             btnBackToMenu.Click += btnBackToMenu_Click;
             // 
-            // label1
+            // name1
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(12, 614);
-            label1.Name = "label1";
-            label1.Size = new Size(78, 20);
-            label1.TabIndex = 2;
-            label1.Text = "Гравець 1";
-            label1.Click += label1_Click;
+            name1.AutoSize = true;
+            name1.Font = new Font("Segoe UI", 11F);
+            name1.Location = new Point(12, 614);
+            name1.Name = "name1";
+            name1.Size = new Size(98, 25);
+            name1.TabIndex = 2;
+            name1.Text = "Гравець 1";
+            name1.Click += label1_Click;
             // 
-            // label2
+            // name2
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(12, 12);
-            label2.Name = "label2";
-            label2.Size = new Size(78, 20);
-            label2.TabIndex = 3;
-            label2.Text = "Гравець 2";
+            name2.AutoSize = true;
+            name2.Font = new Font("Segoe UI", 11F);
+            name2.Location = new Point(12, 12);
+            name2.Name = "name2";
+            name2.Size = new Size(98, 25);
+            name2.TabIndex = 3;
+            name2.Text = "Гравець 2";
             // 
             // panel1
             // 
             panel1.BackColor = SystemColors.ControlLight;
-            panel1.Controls.Add(label3);
+            panel1.Controls.Add(blackTimer);
             panel1.Location = new Point(465, 3);
             panel1.Name = "panel1";
             panel1.Size = new Size(95, 40);
             panel1.TabIndex = 4;
             // 
-            // label3
+            // blackTimer
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 12F);
-            label3.Location = new Point(18, 5);
-            label3.Name = "label3";
-            label3.Size = new Size(60, 28);
-            label3.TabIndex = 0;
-            label3.Text = "00:00";
+            blackTimer.AutoSize = true;
+            blackTimer.Font = new Font("Segoe UI", 12F);
+            blackTimer.Location = new Point(18, 5);
+            blackTimer.Name = "blackTimer";
+            blackTimer.Size = new Size(60, 28);
+            blackTimer.TabIndex = 0;
+            blackTimer.Text = "00:00";
             // 
             // panel2
             // 
             panel2.BackColor = SystemColors.ControlLight;
-            panel2.Controls.Add(label4);
+            panel2.Controls.Add(whiteTimer);
             panel2.Location = new Point(465, 605);
             panel2.Name = "panel2";
             panel2.Size = new Size(95, 40);
             panel2.TabIndex = 5;
             // 
-            // label4
+            // whiteTimer
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 12F);
-            label4.Location = new Point(18, 5);
-            label4.Name = "label4";
-            label4.Size = new Size(60, 28);
-            label4.TabIndex = 0;
-            label4.Text = "00:00";
+            whiteTimer.AutoSize = true;
+            whiteTimer.Font = new Font("Segoe UI", 12F);
+            whiteTimer.Location = new Point(18, 5);
+            whiteTimer.Name = "whiteTimer";
+            whiteTimer.Size = new Size(60, 28);
+            whiteTimer.TabIndex = 0;
+            whiteTimer.Text = "00:00";
             // 
             // GameForm
             // 
@@ -124,8 +126,8 @@
             ClientSize = new Size(687, 655);
             Controls.Add(panel2);
             Controls.Add(panel1);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(name2);
+            Controls.Add(name1);
             Controls.Add(btnBackToMenu);
             Controls.Add(ChessPanel);
             Name = "GameForm";
@@ -144,11 +146,11 @@
 
         private Panel ChessPanel;
         private Button btnBackToMenu;
-        private Label label1;
-        private Label label2;
+        private Label name1;
+        private Label name2;
         private Panel panel1;
-        private Label label3;
+        private Label blackTimer;
         private Panel panel2;
-        private Label label4;
+        private Label whiteTimer;
     }
 }

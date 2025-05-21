@@ -33,14 +33,20 @@
             checkBox1 = new CheckBox();
             btnExit = new Button();
             label1 = new Label();
-            panel1 = new Panel();
-            btnJoinLobby = new Button();
-            panel1.SuspendLayout();
+            panelMain = new Panel();
+            btnSettings = new Button();
+            panelSettings = new Panel();
+            label3 = new Label();
+            cBTimer = new ComboBox();
+            label2 = new Label();
+            buttonBack = new Button();
+            panelMain.SuspendLayout();
+            panelSettings.SuspendLayout();
             SuspendLayout();
             // 
             // btnNewGame
             // 
-            btnNewGame.Location = new Point(24, 99);
+            btnNewGame.Location = new Point(24, 106);
             btnNewGame.Name = "btnNewGame";
             btnNewGame.Size = new Size(228, 40);
             btnNewGame.TabIndex = 0;
@@ -50,7 +56,7 @@
             // 
             // btnHistory
             // 
-            btnHistory.Location = new Point(24, 214);
+            btnHistory.Location = new Point(24, 162);
             btnHistory.Name = "btnHistory";
             btnHistory.Size = new Size(228, 40);
             btnHistory.TabIndex = 1;
@@ -70,7 +76,7 @@
             // 
             // btnExit
             // 
-            btnExit.Location = new Point(24, 276);
+            btnExit.Location = new Point(24, 275);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(228, 40);
             btnExit.TabIndex = 4;
@@ -88,39 +94,93 @@
             label1.TabIndex = 5;
             label1.Text = "Chess";
             // 
-            // panel1
+            // panelMain
             // 
-            panel1.Controls.Add(btnJoinLobby);
-            panel1.Controls.Add(label1);
-            panel1.Controls.Add(btnNewGame);
-            panel1.Controls.Add(btnExit);
-            panel1.Controls.Add(btnHistory);
-            panel1.Location = new Point(12, 12);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(272, 329);
-            panel1.TabIndex = 6;
+            panelMain.Controls.Add(btnSettings);
+            panelMain.Controls.Add(label1);
+            panelMain.Controls.Add(btnNewGame);
+            panelMain.Controls.Add(btnExit);
+            panelMain.Controls.Add(btnHistory);
+            panelMain.Location = new Point(12, 12);
+            panelMain.Name = "panelMain";
+            panelMain.Size = new Size(272, 329);
+            panelMain.TabIndex = 100;
             // 
-            // btnJoinLobby
+            // btnSettings
             // 
-            btnJoinLobby.Location = new Point(24, 157);
-            btnJoinLobby.Name = "btnJoinLobby";
-            btnJoinLobby.Size = new Size(228, 40);
-            btnJoinLobby.TabIndex = 6;
-            btnJoinLobby.Text = "Join Lobby";
-            btnJoinLobby.UseVisualStyleBackColor = true;
-            btnJoinLobby.Click += btnJoinLobby_Click;
+            btnSettings.Location = new Point(24, 220);
+            btnSettings.Name = "btnSettings";
+            btnSettings.Size = new Size(228, 40);
+            btnSettings.TabIndex = 6;
+            btnSettings.Text = "Settings";
+            btnSettings.UseVisualStyleBackColor = true;
+            btnSettings.Click += btnSettings_Click;
+            // 
+            // panelSettings
+            // 
+            panelSettings.Controls.Add(label3);
+            panelSettings.Controls.Add(cBTimer);
+            panelSettings.Controls.Add(label2);
+            panelSettings.Controls.Add(buttonBack);
+            panelSettings.Location = new Point(12, 12);
+            panelSettings.Name = "panelSettings";
+            panelSettings.Size = new Size(272, 329);
+            panelSettings.TabIndex = 19;
+            panelSettings.Visible = false;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(33, 95);
+            label3.Name = "label3";
+            label3.Size = new Size(83, 20);
+            label3.TabIndex = 7;
+            label3.Text = "Select time";
+            // 
+            // cBTimer
+            // 
+            cBTimer.FormattingEnabled = true;
+            cBTimer.Items.AddRange(new object[] { "Рапід (10 хв)", "Бліц (5 хв)", "Пуля (1 хв)" });
+            cBTimer.Location = new Point(33, 118);
+            cBTimer.Name = "cBTimer";
+            cBTimer.Size = new Size(206, 28);
+            cBTimer.TabIndex = 6;
+            cBTimer.Text = "Рапід (10 хв)";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 30F);
+            label2.Location = new Point(33, 17);
+            label2.Name = "label2";
+            label2.Size = new Size(206, 67);
+            label2.TabIndex = 5;
+            label2.Text = "Settings";
+            // 
+            // buttonBack
+            // 
+            buttonBack.Location = new Point(24, 275);
+            buttonBack.Name = "buttonBack";
+            buttonBack.Size = new Size(228, 40);
+            buttonBack.TabIndex = 4;
+            buttonBack.Text = "Back";
+            buttonBack.UseVisualStyleBackColor = true;
+            buttonBack.Click += buttonBack_Click;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(295, 353);
-            Controls.Add(panel1);
+            Controls.Add(panelSettings);
+            Controls.Add(panelMain);
             Controls.Add(checkBox1);
             Name = "MainForm";
             Text = "MainForm";
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            panelMain.ResumeLayout(false);
+            panelMain.PerformLayout();
+            panelSettings.ResumeLayout(false);
+            panelSettings.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -132,7 +192,12 @@
         private CheckBox checkBox1;
         private Button btnExit;
         private Label label1;
-        private Panel panel1;
-        private Button btnJoinLobby;
+        private Panel panelMain;
+        private Button btnSettings;
+        private Panel panelSettings;
+        private ComboBox cBTimer;
+        private Label label2;
+        private Button buttonBack;
+        private Label label3;
     }
 }
