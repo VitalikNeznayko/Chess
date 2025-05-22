@@ -17,7 +17,6 @@ namespace ChessGame
         private const int Size = 8;
         private readonly PieceFactory _pieceFactory;
 
-        // Подія для сповіщення про зміну стану гри
         public event EventHandler<GameStateChangedEventArgs> GameStateChanged;
 
         public class GameStateChangedEventArgs : EventArgs
@@ -26,9 +25,6 @@ namespace ChessGame
             public bool IsCheck { get; set; }
             public bool IsGameEnded { get; set; }
             public string LastMove { get; set; }
-            // Заглушки для майбутньої підтримки рокіровки та просування пішака
-            public bool IsCastling { get; set; }
-            public bool IsPawnPromotion { get; set; }
         }
 
         private ChessGame()
@@ -238,7 +234,7 @@ namespace ChessGame
             NotifyGameStateChanged();
         }
 
-        private void NotifyGameStateChanged(bool isCastling = false, bool isPawnPromotion = false)
+        private void NotifyGameStateChanged()
         {
             GameStateChanged?.Invoke(this, new GameStateChangedEventArgs
             {
@@ -246,8 +242,6 @@ namespace ChessGame
                 IsCheck = IsKingInCheck(IsWhiteTurn),
                 IsGameEnded = GameEnded,
                 LastMove = LastMove.HasValue ? $"{LastMove.Value.from} to {LastMove.Value.to}" : null,
-                IsCastling = isCastling,
-                IsPawnPromotion = isPawnPromotion
             });
         }
     }
