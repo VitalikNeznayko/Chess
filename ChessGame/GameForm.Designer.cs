@@ -53,9 +53,9 @@
             // 
             // btnBackToMenu
             // 
-            btnBackToMenu.Location = new Point(598, 12);
+            btnBackToMenu.Location = new Point(583, 12);
             btnBackToMenu.Name = "btnBackToMenu";
-            btnBackToMenu.Size = new Size(77, 48);
+            btnBackToMenu.Size = new Size(92, 48);
             btnBackToMenu.TabIndex = 1;
             btnBackToMenu.Text = "Back To Menu ";
             btnBackToMenu.UseVisualStyleBackColor = true;
@@ -67,9 +67,9 @@
             name1.Font = new Font("Segoe UI", 11F);
             name1.Location = new Point(12, 614);
             name1.Name = "name1";
-            name1.Size = new Size(98, 25);
+            name1.Size = new Size(79, 25);
             name1.TabIndex = 2;
-            name1.Text = "Гравець 1";
+            name1.Text = "Player 1";
             // 
             // name2
             // 
@@ -77,9 +77,9 @@
             name2.Font = new Font("Segoe UI", 11F);
             name2.Location = new Point(12, 12);
             name2.Name = "name2";
-            name2.Size = new Size(98, 25);
+            name2.Size = new Size(79, 25);
             name2.TabIndex = 3;
-            name2.Text = "Гравець 2";
+            name2.Text = "Player 2";
             // 
             // panel1
             // 
@@ -124,7 +124,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
-            ClientSize = new Size(687, 655);
+            ClientSize = new Size(714, 655);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Controls.Add(name2);

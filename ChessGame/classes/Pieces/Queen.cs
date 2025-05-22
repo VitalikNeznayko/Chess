@@ -2,52 +2,56 @@
 using ChessGame.Classes.Pieces;
 using System.Xml.Linq;
 
-public class Queen : Piece
+
+namespace ChessGame.Classes.Pieces
 {
-	public Queen(Position position, bool isWhite, Image icon) : base(position, isWhite)
+	public class Queen : Piece
 	{
-		Name = "Queen";
-        Icon = icon;
-    }
-
-	public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
-	{
-		bool movesLikeRook = Position.X == endPos.X || Position.Y == endPos.Y;
-		bool movesLikeBishop = Math.Abs(endPos.X - Position.X) == Math.Abs(endPos.Y - Position.Y);
-
-		if (!movesLikeRook && !movesLikeBishop)
-			return false;
-
-		int stepCol = 0, stepRow = 0;
-		if (movesLikeRook)
+		public Queen(Position position, bool isWhite, Image icon) : base(position, isWhite)
 		{
-			stepCol = Position.X == endPos.X ? 0 : (endPos.X > Position.X ? 1 : -1);
-			stepRow = Position.Y == endPos.Y ? 0 : (endPos.Y > Position.Y ? 1 : -1);
-		}
-		else if (movesLikeBishop)
-		{
-			stepCol = endPos.X > Position.X ? 1 : -1;
-			stepRow = endPos.Y > Position.Y ? 1 : -1;
+			Name = "Queen";
+			Icon = icon;
 		}
 
-		int col = Position.X + stepCol;
-		int row = Position.Y + stepRow;
-
-		while (true)
+		public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
 		{
-			if (col == endPos.X && row == endPos.Y)
-				break;
+			bool movesLikeRook = Position.X == endPos.X || Position.Y == endPos.Y;
+			bool movesLikeBishop = Math.Abs(endPos.X - Position.X) == Math.Abs(endPos.Y - Position.Y);
 
-			if (col < 0 || col >= 8 || row < 0 || row >= 8)
+			if (!movesLikeRook && !movesLikeBishop)
 				return false;
 
-			if (board[row, col] != null)
-				return false;
+			int stepCol = 0, stepRow = 0;
+			if (movesLikeRook)
+			{
+				stepCol = Position.X == endPos.X ? 0 : (endPos.X > Position.X ? 1 : -1);
+				stepRow = Position.Y == endPos.Y ? 0 : (endPos.Y > Position.Y ? 1 : -1);
+			}
+			else if (movesLikeBishop)
+			{
+				stepCol = endPos.X > Position.X ? 1 : -1;
+				stepRow = endPos.Y > Position.Y ? 1 : -1;
+			}
 
-			col += stepCol;
-			row += stepRow;
+			int col = Position.X + stepCol;
+			int row = Position.Y + stepRow;
+
+			while (true)
+			{
+				if (col == endPos.X && row == endPos.Y)
+					break;
+
+				if (col < 0 || col >= 8 || row < 0 || row >= 8)
+					return false;
+
+				if (board[row, col] != null)
+					return false;
+
+				col += stepCol;
+				row += stepRow;
+			}
+
+			return true;
 		}
-
-		return true;
 	}
 }

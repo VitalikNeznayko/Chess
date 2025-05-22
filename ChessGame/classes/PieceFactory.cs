@@ -28,7 +28,7 @@ namespace ChessGame.Classes.Pieces
         {
             if (!_imagePaths.TryGetValue((type, isWhite), out string imagePath))
             {
-                throw new ArgumentException($"Немає зображення для фігури {type} кольору {(isWhite ? "білого" : "чорного")}");
+                throw new ArgumentException($"No image for the shape {type} color {(isWhite ? "white" : "black")}");
             }
 
             Image icon = Image.FromFile(imagePath);
@@ -41,7 +41,7 @@ namespace ChessGame.Classes.Pieces
                 PieceType.Queen => new Queen(position, isWhite, icon),
                 PieceType.Rook => new Rook(position, isWhite, icon),
                 PieceType.Bishop => new Bishop(position, isWhite, icon),
-                _ => throw new ArgumentException("Невідомий тип фігури")
+                _ => throw new ArgumentException("Unknown shape type")
             };
         }
     }

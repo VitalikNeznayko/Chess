@@ -66,19 +66,19 @@ namespace ChessGame
             }
 
             Board[0, 0] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(0, 0), false);
-            Board[0, 1] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(1, 0), false);
-            Board[0, 2] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(2, 0), false);
-            Board[0, 3] = _pieceFactory.CreatePiece(PieceType.Queen, new Position(3, 0), false);
-            Board[0, 4] = _pieceFactory.CreatePiece(PieceType.King, new Position(4, 0), false);
+			Board[0, 1] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(1, 0), false);
+			Board[0, 2] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(2, 0), false);
+			Board[0, 3] = _pieceFactory.CreatePiece(PieceType.Queen, new Position(3, 0), false);
+			Board[0, 4] = _pieceFactory.CreatePiece(PieceType.King, new Position(4, 0), false);
             Board[0, 5] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(5, 0), false);
             Board[0, 6] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(6, 0), false);
             Board[0, 7] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(7, 0), false);
 
             Board[7, 0] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(0, 7), true);
-            Board[7, 1] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(1, 7), true);
-            Board[7, 2] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(2, 7), true);
-            Board[7, 3] = _pieceFactory.CreatePiece(PieceType.Queen, new Position(3, 7), true);
-            Board[7, 4] = _pieceFactory.CreatePiece(PieceType.King, new Position(4, 7), true);
+			Board[7, 1] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(1, 7), true);
+			Board[7, 2] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(2, 7), true);
+			Board[7, 3] = _pieceFactory.CreatePiece(PieceType.Queen, new Position(3, 7), true);
+			Board[7, 4] = _pieceFactory.CreatePiece(PieceType.King, new Position(4, 7), true);
             Board[7, 5] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(5, 7), true);
             Board[7, 6] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(6, 7), true);
             Board[7, 7] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(7, 7), true);
@@ -218,10 +218,6 @@ namespace ChessGame
                 if (boardPanel.FindForm() is GameForm gameForm)
                 {
                     gameForm.ResetTimers();
-                }
-                else
-                {
-                    MessageBox.Show("boardPanel.Parent is not GameForm");
                 }
             }
         }
