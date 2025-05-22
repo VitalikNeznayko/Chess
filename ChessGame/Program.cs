@@ -1,5 +1,6 @@
 namespace ChessGame
 {
+
     internal static class Program
     {
         /// <summary>

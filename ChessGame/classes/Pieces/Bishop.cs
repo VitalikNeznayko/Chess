@@ -12,32 +12,42 @@ namespace ChessGame.Classes.Pieces
 			Icon = icon;
 		}
 
-		public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
-		{
-			if (Math.Abs(endPos.X - Position.X) != Math.Abs(endPos.Y - Position.Y))
-				return false;
+        // Метод перевірки допустимості ходу слона
+        public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
+        {
 
-			int stepCol = endPos.X > Position.X ? 1 : -1;
-			int stepRow = endPos.Y > Position.Y ? 1 : -1;
-			int col = Position.X + stepCol;
-			int row = Position.Y + stepRow;
+            // Слон може рухатись лише по діагоналі,
+            // отже зміщення по X має дорівнювати зміщенню по Y
+            if (Math.Abs(endPos.X - Position.X) != Math.Abs(endPos.Y - Position.Y))
+                return false;
 
-			while (true)
-			{
-				if (col == endPos.X && row == endPos.Y)
-					break;
+            // Визначаємо напрямок руху по колонках і рядках
+            int stepCol = endPos.X > Position.X ? 1 : -1;
+            int stepRow = endPos.Y > Position.Y ? 1 : -1;
 
-				if (col < 0 || col >= 8 || row < 0 || row >= 8)
-					return false;
+            // Початкові координати для перевірки шляху
+            int col = Position.X + stepCol;
+            int row = Position.Y + stepRow;
 
-				if (board[row, col] != null)
-					return false;
+            // Перевіряємо, чи немає фігур на шляху
+            while (true)
+            {
+                if (col == endPos.X && row == endPos.Y)
+                    break;
 
-				col += stepCol;
-				row += stepRow;
-			}
+                // Перевірка виходу за межі дошки
+                if (col < 0 || col >= 8 || row < 0 || row >= 8)
+                    return false;
 
-			return true;
-		}
+                // Якщо клітинка не порожня — хід недійсний
+                if (board[row, col] != null)
+                    return false;
+
+                col += stepCol;
+                row += stepRow;
+            }
+
+            return true; // Якщо шлях вільний — хід допустимий
+        }
 	}
 }
