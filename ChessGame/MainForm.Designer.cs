@@ -36,6 +36,8 @@
             panelMain = new Panel();
             btnSettings = new Button();
             panelSettings = new Panel();
+            label4 = new Label();
+            cBColor = new ComboBox();
             label3 = new Label();
             cBTimer = new ComboBox();
             label2 = new Label();
@@ -118,6 +120,8 @@
             // 
             // panelSettings
             // 
+            panelSettings.Controls.Add(label4);
+            panelSettings.Controls.Add(cBColor);
             panelSettings.Controls.Add(label3);
             panelSettings.Controls.Add(cBTimer);
             panelSettings.Controls.Add(label2);
@@ -127,6 +131,27 @@
             panelSettings.Size = new Size(272, 329);
             panelSettings.TabIndex = 19;
             panelSettings.Visible = false;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 11F);
+            label4.Location = new Point(24, 168);
+            label4.Name = "label4";
+            label4.Size = new Size(165, 25);
+            label4.TabIndex = 9;
+            label4.Text = "Select board color";
+            // 
+            // cBColor
+            // 
+            cBColor.Font = new Font("Segoe UI", 10F);
+            cBColor.FormattingEnabled = true;
+            cBColor.Items.AddRange(new object[] { "Default", "Classic", "Blue", "Green" });
+            cBColor.Location = new Point(24, 193);
+            cBColor.Name = "cBColor";
+            cBColor.Size = new Size(228, 31);
+            cBColor.TabIndex = 8;
+            cBColor.Text = "Default";
             // 
             // label3
             // 
@@ -142,12 +167,12 @@
             // 
             cBTimer.Font = new Font("Segoe UI", 10F);
             cBTimer.FormattingEnabled = true;
-            cBTimer.Items.AddRange(new object[] { "10 хв", "5 хв", "1 хв" });
+            cBTimer.Items.AddRange(new object[] { "10 min", "5 min", "1 min" });
             cBTimer.Location = new Point(24, 118);
             cBTimer.Name = "cBTimer";
             cBTimer.Size = new Size(228, 31);
             cBTimer.TabIndex = 6;
-            cBTimer.Text = "10 хв";
+            cBTimer.Text = "10 min";
             // 
             // label2
             // 
@@ -201,5 +226,7 @@
         private Label label2;
         private Button buttonBack;
         private Label label3;
+        private ComboBox cBColor;
+        private Label label4;
     }
 }

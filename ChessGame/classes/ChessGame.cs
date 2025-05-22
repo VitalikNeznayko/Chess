@@ -219,10 +219,6 @@ namespace ChessGame
                 {
                     gameForm.ResetTimers();
                 }
-                else
-                {
-                    MessageBox.Show("boardPanel.Parent is not GameForm");
-                }
             }
         }
     }

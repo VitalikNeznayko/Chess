@@ -14,16 +14,47 @@ namespace ChessGame.Classes
         private Position selectedPiece = null;
         private const int CoordinateOffset = 35; 
         private readonly Font coordinateFont = new Font("Arial", 12, FontStyle.Bold);
-        private readonly Brush backgroundBrush = new SolidBrush(Color.FromArgb(0xE8, 0xED, 0xF9));
-       
-        public BoardPanel(int cellSize = 60)
+        private Brush lightBrush;
+        private Brush darkBrush;
+        private Brush backgroundBrush;
+        public BoardPanel(int cellSize = 60, string background = "default")
         {
             this.cellSize = cellSize;
             this.Width = cellSize * Size + CoordinateOffset * 2;
             this.Height = cellSize * Size + CoordinateOffset * 2;
+            SetTheme(background);
             this.DoubleBuffered = true;
             this.Paint += Board_Paint;
             this.MouseClick += BoardPanel_MouseClick;
+        }
+        private void SetTheme(string background)
+        {
+            switch (background.ToLower())
+            {
+                case "default":
+                    lightBrush = new SolidBrush(Color.FromArgb(0xE8, 0xED, 0xF9));
+                    darkBrush = new SolidBrush(Color.FromArgb(0xB7, 0xC0, 0xD8));
+                    backgroundBrush = new SolidBrush(Color.FromArgb(230, 240, 255));
+                    break;
+
+                case "classic":
+                    lightBrush = new SolidBrush(Color.FromArgb(240, 217, 181)); 
+                    darkBrush = new SolidBrush(Color.FromArgb(181, 136, 99));   
+                    backgroundBrush = new SolidBrush(Color.Beige);
+                    break;
+
+                case "green":
+                    lightBrush = new SolidBrush(Color.FromArgb(234, 235, 200));
+                    darkBrush = new SolidBrush(Color.FromArgb(119, 149, 86));
+                    backgroundBrush = new SolidBrush(Color.FromArgb(200, 255, 200));
+                    break;
+
+                default:
+                    lightBrush = new SolidBrush(Color.FromArgb(0xE8, 0xED, 0xF9));
+                    darkBrush = new SolidBrush(Color.FromArgb(0xB7, 0xC0, 0xD8));
+                    backgroundBrush = new SolidBrush(Color.FromArgb(230, 240, 255));
+                    break;
+            }
         }
 
         private void Board_Paint(object sender, PaintEventArgs e)
@@ -37,10 +68,7 @@ namespace ChessGame.Classes
             {
                 for (int col = 0; col < Size; col++)
                 {
-                    Brush White = new SolidBrush(Color.FromArgb(0xE8, 0xED, 0xF9));
-                    Brush Black = new SolidBrush(Color.FromArgb(0xB7, 0xC0, 0xD8));
-
-                    Brush brush = (row + col) % 2 == 0 ? White : Black;
+                    Brush brush = (row + col) % 2 == 0 ? lightBrush : darkBrush;
                     g.FillRectangle(brush, col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
 
                     if (board[row, col] is King && board[row, col].IsWhite == ChessGame.Instance.IsWhiteTurn && isKingInCheck)
@@ -109,7 +137,7 @@ namespace ChessGame.Classes
             {
                 for (int col = 0; col < Size; col++)
                 {
-                    string letter = ((char)('a' + col)).ToString();
+                    string letter = ((char)('A' + col)).ToString();
                     g.DrawString(letter, coordinateFont, textBrush, col * cellSize + CoordinateOffset + cellSize / 2 - 5, CoordinateOffset / 2 - 5);
                     g.DrawString(letter, coordinateFont, textBrush, col * cellSize + CoordinateOffset + cellSize / 2 - 5, Size * cellSize + CoordinateOffset + 5);
                 }

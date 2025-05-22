@@ -11,10 +11,10 @@ namespace ChessGame
         private string selectedTime; 
         private BoardPanel board;
 
-        public GameForm(string selectedTime)
+        public GameForm(string selectedTime, string background)
         {
             InitializeComponent();
-            board = new BoardPanel();
+            board = new BoardPanel(60, background);
             ChessPanel.Controls.Add(board);
 
             this.selectedTime = selectedTime; 
@@ -35,9 +35,9 @@ namespace ChessGame
         {
             return selectedTime switch
             {
-                "1 хв" => 1,
-                "5 хв" => 5,
-                "10 хв" => 10, 
+                "1 min" => 1,
+                "5 min" => 5,
+                "10 min" => 10, 
                 _ => 10
             };
         }
@@ -53,7 +53,7 @@ namespace ChessGame
                 whiteTimeLeft = whiteTimeLeft.Subtract(TimeSpan.FromSeconds(1));
                 if (whiteTimeLeft < TimeSpan.Zero)
                 {
-                    ChessGame.Instance.EndGame("Чорні перемогли за часом!", board);
+                    ChessGame.Instance.EndGame("Black won on time!", board);
                     return;
                 }
             }
@@ -62,7 +62,7 @@ namespace ChessGame
                 blackTimeLeft = blackTimeLeft.Subtract(TimeSpan.FromSeconds(1));
                 if (blackTimeLeft < TimeSpan.Zero)
                 {
-                    ChessGame.Instance.EndGame("Білі перемогли за часом!", board);
+                    ChessGame.Instance.EndGame("White won on time!", board);
                     return;
                 }
             }
