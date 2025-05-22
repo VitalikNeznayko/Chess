@@ -16,6 +16,7 @@ namespace ChessGame
         public bool GameEnded;
         private const int Size = 8;
         private readonly PieceFactory _pieceFactory;
+        private readonly GameLogger? _logger;
 
         public event EventHandler<GameStateChangedEventArgs> GameStateChanged;
 
@@ -27,13 +28,14 @@ namespace ChessGame
             public string LastMove { get; set; }
         }
 
-        private ChessGame()
+        private ChessGame(GameLogger logger = null)
         {
             Board = new Piece[Size, Size];
             IsWhiteTurn = true;
             LastMove = null;
             GameEnded = false;
             _pieceFactory = new PieceFactory();
+            _logger = logger;
             InitializeBoard();
             NotifyGameStateChanged();
         }
@@ -42,8 +44,9 @@ namespace ChessGame
         {
             get
             {
+                var logger = new GameLogger();
                 if (_instance == null)
-                    _instance = new ChessGame();
+                    _instance = new ChessGame(logger);
                 return _instance;
             }
         }
@@ -221,6 +224,7 @@ namespace ChessGame
         public void EndGame(string message, BoardPanel boardPanel)
         {
             GameEnded = true;
+            _logger?.LogGameResult(message);
             MessageBox.Show(message, "Game Over", MessageBoxButtons.OK, MessageBoxIcon.Information);
             if (MessageBox.Show("Would you like to start a new game?", "New Game", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {

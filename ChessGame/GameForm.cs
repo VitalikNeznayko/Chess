@@ -38,8 +38,8 @@ namespace ChessGame
             {
                 "1 min" => 1,
                 "5 min" => 5,
-                "10 min" => 10, 
-                _ => 10
+                "10 min" => 0, 
+                _ => 0
             };
         }
         private void GameTimer_Tick(object sender, EventArgs e)
