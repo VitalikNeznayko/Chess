@@ -1,9 +1,7 @@
 ﻿using ChessGame.Classes.Pieces;
-using ChessGame;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-
 
 namespace ChessGame.Classes
 {
@@ -12,23 +10,25 @@ namespace ChessGame.Classes
         private const int Size = 8;
         private int cellSize = 60;
         private Position selectedPiece = null;
-        private const int CoordinateOffset = 35; 
+        private const int CoordinateOffset = 35;
         private readonly Font coordinateFont = new Font("Arial", 12, FontStyle.Bold);
         private Brush lightBrush;
         private Brush darkBrush;
         private Brush backgroundBrush;
-        public BoardPanel(int cellSize = 60, string background = "Default")
+
+        public BoardPanel(int cellSize = 60, string background = "default")
         {
             this.cellSize = cellSize;
             this.Width = cellSize * Size + CoordinateOffset * 2;
             this.Height = cellSize * Size + CoordinateOffset * 2;
-
             SetTheme(background);
-
             this.DoubleBuffered = true;
             this.Paint += Board_Paint;
             this.MouseClick += BoardPanel_MouseClick;
+
+            ChessGame.Instance.GameStateChanged += OnGameStateChanged;
         }
+
         private void SetTheme(string background)
         {
             switch (background.ToLower())
@@ -38,19 +38,16 @@ namespace ChessGame.Classes
                     darkBrush = new SolidBrush(Color.FromArgb(0xB7, 0xC0, 0xD8));
                     backgroundBrush = new SolidBrush(Color.FromArgb(230, 240, 255));
                     break;
-
                 case "classic":
-                    lightBrush = new SolidBrush(Color.FromArgb(240, 217, 181)); 
-                    darkBrush = new SolidBrush(Color.FromArgb(181, 136, 99));   
+                    lightBrush = new SolidBrush(Color.FromArgb(240, 217, 181));
+                    darkBrush = new SolidBrush(Color.FromArgb(181, 136, 99));
                     backgroundBrush = new SolidBrush(Color.Beige);
                     break;
-
                 case "green":
                     lightBrush = new SolidBrush(Color.FromArgb(234, 235, 200));
                     darkBrush = new SolidBrush(Color.FromArgb(119, 149, 86));
                     backgroundBrush = new SolidBrush(Color.FromArgb(200, 255, 200));
                     break;
-
                 default:
                     lightBrush = new SolidBrush(Color.FromArgb(0xE8, 0xED, 0xF9));
                     darkBrush = new SolidBrush(Color.FromArgb(0xB7, 0xC0, 0xD8));
@@ -59,53 +56,89 @@ namespace ChessGame.Classes
             }
         }
 
+        private void OnGameStateChanged(object sender, ChessGame.GameStateChangedEventArgs e)
+        {
+            Invalidate(); 
+        }
+
         private void Board_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             var board = ChessGame.Instance.Board;
 
-            DrawBackground(g);
-            DrawBoardSquares(g, board);
-            DrawCoordinates(g);
-            DrawPieces(g, board);
-        }
-
-        private void DrawBackground(Graphics g)
-        {
-            g.FillRectangle(backgroundBrush, 0, 0, Width, Height);
-        }
-
-        private void DrawBoardSquares(Graphics g, Piece[,] board)
-        {
             bool isKingInCheck = ChessGame.Instance.IsKingInCheck(ChessGame.Instance.IsWhiteTurn);
+            g.FillRectangle(backgroundBrush, 0, 0, this.Width, this.Height);
 
             for (int row = 0; row < Size; row++)
             {
                 for (int col = 0; col < Size; col++)
                 {
-                    Brush brush = GetSquareBrush(row, col, board, isKingInCheck);
+                    Brush brush = (row + col) % 2 == 0 ? lightBrush : darkBrush;
                     g.FillRectangle(brush, col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
+
+                    if (board[row, col] is King && board[row, col].IsWhite == ChessGame.Instance.IsWhiteTurn && isKingInCheck)
+                    {
+                        g.FillRectangle(new SolidBrush(Color.FromArgb(255, 200, 0, 0)), col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
+                    }
+
+                    if (ChessGame.Instance.LastMove.HasValue)
+                    {
+                        var (fromPos, toPos) = ChessGame.Instance.LastMove.Value;
+                        if ((row == fromPos.Y && col == fromPos.X) || (row == toPos.Y && col == toPos.X))
+                        {
+                            g.FillRectangle(new SolidBrush(Color.FromArgb(255, 240, 240, 10)), col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
+                        }
+                    }
+
+                    if (selectedPiece != null)
+                    {
+                        Position startPos = selectedPiece;
+                        Position endPos = new Position(col, row);
+                        Piece piece = board[startPos.Y, startPos.X];
+
+                        if (piece != null && piece.IsValidMove(endPos, board) &&
+                            (board[row, col] == null || board[row, col].IsWhite != piece.IsWhite))
+                        {
+                            bool isKingMove = piece is King;
+                            bool isTargetSafe = !ChessGame.Instance.IsSquareUnderAttack(endPos, !piece.IsWhite);
+
+                            if (isKingMove)
+                            {
+                                if (board[row, col] != null && board[row, col].IsWhite != piece.IsWhite)
+                                {
+                                    g.FillRectangle(new SolidBrush(Color.FromArgb(255, 50, 180, 50)), col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
+                                }
+                                else
+                                {
+                                    g.FillRectangle(new SolidBrush(Color.FromArgb(255, 185, 155, 255)), col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
+                                }
+                            }
+                            else
+                            {
+                                if (!isKingInCheck || ChessGame.Instance.IsMoveResolvingCheck(startPos, endPos, piece.IsWhite))
+                                {
+                                    if (board[row, col] != null && board[row, col].IsWhite != piece.IsWhite)
+                                    {
+                                        g.FillRectangle(new SolidBrush(Color.FromArgb(255, 50, 180, 50)), col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
+                                    }
+                                    else
+                                    {
+                                        g.FillRectangle(new SolidBrush(Color.FromArgb(255, 185, 155, 255)), col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     g.DrawRectangle(Pens.White, col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
+
+                    if (board[row, col] != null)
+                    {
+                        g.DrawImage(board[row, col].Icon, col * cellSize + CoordinateOffset + 5, row * cellSize + CoordinateOffset + 5, 50, 50);
+                    }
                 }
             }
-        }
 
-        private Brush GetSquareBrush(int row, int col, Piece[,] board, bool isKingInCheck)
-        {
-            if (IsKingInCheckSquare(row, col, board, isKingInCheck))
-                return new SolidBrush(Color.FromArgb(255, 200, 0, 0));
-
-            if (IsLastMoveSquare(row, col))
-                return new SolidBrush(Color.FromArgb(255, 240, 240, 10));
-
-            if (IsValidMoveSquare(row, col, board))
-                return GetValidMoveBrush(row, col, board);
-
-            return (row + col) % 2 == 0 ? lightBrush : darkBrush;
-        }
-
-        private void DrawCoordinates(Graphics g)
-        {
             using (Brush textBrush = new SolidBrush(Color.Black))
             {
                 for (int col = 0; col < Size; col++)
@@ -124,24 +157,10 @@ namespace ChessGame.Classes
             }
         }
 
-        private void DrawPieces(Graphics g, Piece[,] board)
-        {
-            for (int row = 0; row < Size; row++)
-            {
-                for (int col = 0; col < Size; col++)
-                {
-                    if (board[row, col] != null)
-                    {
-                        g.DrawImage(board[row, col].Icon, col * cellSize + CoordinateOffset + 5, row * cellSize + CoordinateOffset + 5, 50, 50);
-                    }
-                }
-            }
-        }
-
-
         private void BoardPanel_MouseClick(object sender, MouseEventArgs e)
         {
             if (ChessGame.Instance.GameEnded) return;
+
             int clickedRow = (e.Y - CoordinateOffset) / cellSize;
             int clickedCol = (e.X - CoordinateOffset) / cellSize;
 
@@ -195,6 +214,7 @@ namespace ChessGame.Classes
                             board[startPos.Y, startPos.X] = null;
                             piece.UpdatePosition(endPos);
                             ChessGame.Instance.UpdateKingPosition(endPos, piece.IsWhite);
+
                             ChessGame.Instance.LastMove = (startPos, endPos);
                             ChessGame.Instance.IsWhiteTurn = !ChessGame.Instance.IsWhiteTurn;
                             ChessGame.Instance.CheckGameState(this);
@@ -216,7 +236,6 @@ namespace ChessGame.Classes
                             {
                                 ChessGame.Instance.LastMove = (startPos, endPos);
                                 ChessGame.Instance.IsWhiteTurn = !ChessGame.Instance.IsWhiteTurn;
-                                Invalidate();
                                 ChessGame.Instance.CheckGameState(this);
                             }
                             else
@@ -230,7 +249,6 @@ namespace ChessGame.Classes
                 }
 
                 selectedPiece = null;
-                Invalidate();
             }
         }
     }
