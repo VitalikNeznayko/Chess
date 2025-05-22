@@ -33,7 +33,8 @@ namespace ChessGame
 
         private void btnHistory_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Функція історії ще в розробці.");
+            panelHistory.Show();
+            panelMain.Hide();
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -45,6 +46,38 @@ namespace ChessGame
         private void buttonBack_Click(object sender, EventArgs e)
         {
             panelSettings.Hide();
+            panelMain.Show();
+        }
+
+        private void LoadLogToListBox()
+        {
+            var logger = new GameLogger();
+            List<string> entries = logger.ReadLogEntries();
+
+            listBoxLog.Items.Clear();
+            foreach (var entry in entries)
+            {
+                listBoxLog.Items.Add(entry);
+            }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            LoadLogToListBox();
+        }
+
+        private void listBoxLog_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBoxLog.SelectedItem != null)
+            {
+                string selectedLog = listBoxLog.SelectedItem.ToString();
+                MessageBox.Show(selectedLog, "Деталі логу", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            panelHistory.Hide();
             panelMain.Show();
         }
     }

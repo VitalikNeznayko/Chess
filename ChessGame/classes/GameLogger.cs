@@ -16,7 +16,7 @@ namespace ChessGame
         {
             try
             {
-                string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Game Result: {resultMessage}";
+                string logEntry = $"Game result: {resultMessage} - {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
 
                 File.AppendAllText(_logFilePath, logEntry + Environment.NewLine);
             }
@@ -25,5 +25,23 @@ namespace ChessGame
                 Console.WriteLine($"Logging error: {ex.Message}");
             }
         }
+
+        public List<string> ReadLogEntries()
+        {
+            try
+            {
+                if (File.Exists(_logFilePath))
+                {
+                    return File.ReadAllLines(_logFilePath).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Read error: {ex.Message}");
+            }
+
+            return new List<string>(); 
+        }
+
     }
 }
