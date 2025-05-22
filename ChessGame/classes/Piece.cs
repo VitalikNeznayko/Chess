@@ -4,7 +4,8 @@ namespace ChessGame.Classes.Pieces
 {
 	public abstract class Piece
 	{
-		public bool IsWhite { get; set; }
+        // Визначає, чи фігура біла. Якщо false – фігура чорна.
+        public bool IsWhite { get; set; }
 		public string Name { get; set; }
 		public Image Icon { get; set; }
 		public Position Position { get; private set; }
@@ -15,11 +16,13 @@ namespace ChessGame.Classes.Pieces
 			IsWhite = isWhite;
 		}
 
-		public void UpdatePosition(Position newPosition)
+        // Оновлює позицію фігури на нову.
+        public void UpdatePosition(Position newPosition)
 		{
 			Position = newPosition;
 		}
 
-		public abstract bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false);
+        // Абстрактний метод для перевірки, чи є хід на вказану позицію коректним.
+        public abstract bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false);
 	}
 }

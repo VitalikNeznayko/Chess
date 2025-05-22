@@ -18,8 +18,12 @@ namespace ChessGame
         private readonly PieceFactory _pieceFactory;
         private readonly GameLogger? _logger;
 
+
+        // Подія для сповіщення про зміну стану гри
         public event EventHandler<GameStateChangedEventArgs> GameStateChanged;
 
+
+        // Клас аргументів події зміни стану гри
         public class GameStateChangedEventArgs : EventArgs
         {
             public bool IsWhiteTurn { get; set; }
@@ -27,7 +31,7 @@ namespace ChessGame
             public bool IsGameEnded { get; set; }
             public string LastMove { get; set; }
         }
-
+       
         private ChessGame(GameLogger logger = null)
         {
             Board = new Piece[Size, Size];
@@ -40,6 +44,7 @@ namespace ChessGame
             NotifyGameStateChanged();
         }
 
+        // Публічне властивість для доступу до єдиного екземпляра гри
         public static ChessGame Instance
         {
             get
@@ -51,6 +56,8 @@ namespace ChessGame
             }
         }
 
+
+        // Метод ініціалізації ігрової дошки зі стандартним розміщенням фігур
         private void InitializeBoard()
         {
             for (int col = 0; col < Size; col++)
@@ -59,6 +66,7 @@ namespace ChessGame
                 Board[6, col] = _pieceFactory.CreatePiece(PieceType.Pawn, new Position(col, 6), true);
             }
 
+            // Чорні фігури
             Board[0, 0] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(0, 0), false);
             Board[0, 1] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(1, 0), false);
             Board[0, 2] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(2, 0), false);
@@ -68,6 +76,8 @@ namespace ChessGame
             Board[0, 6] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(6, 0), false);
             Board[0, 7] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(7, 0), false);
 
+
+            // Білі фігури
             Board[7, 0] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(0, 7), true);
             Board[7, 1] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(1, 7), true);
             Board[7, 2] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(2, 7), true);
@@ -81,6 +91,8 @@ namespace ChessGame
             BlackKingPos = new Position(4, 0);
         }
 
+
+        // Перезапускає гру
         public void RestartGame()
         {
             for (int row = 0; row < Size; row++)
@@ -99,6 +111,8 @@ namespace ChessGame
             NotifyGameStateChanged();
         }
 
+
+        // Оновлює позицію короля після ходу
         public void UpdateKingPosition(Position pos, bool isWhite)
         {
             if (isWhite)
@@ -108,11 +122,15 @@ namespace ChessGame
             NotifyGameStateChanged();
         }
 
+
+        // Повертає позицію короля певного кольору
         public Position GetKingPosition(bool isWhite)
         {
             return isWhite ? WhiteKingPos : BlackKingPos;
         }
 
+
+        // Перевіряє, чи знаходиться клітинка під атакою суперника
         public bool IsSquareUnderAttack(Position targetPos, bool attackerIsWhite)
         {
             for (int row = 0; row < Size; row++)
@@ -132,12 +150,16 @@ namespace ChessGame
             return false;
         }
 
+
+        // Перевіряє, чи знаходиться король під шахом
         public bool IsKingInCheck(bool forWhite)
         {
             Position kingPos = GetKingPosition(forWhite);
             return IsSquareUnderAttack(kingPos, !forWhite);
         }
 
+
+        // Симулює хід, щоб перевірити, чи він рятує від шаху
         public bool IsMoveResolvingCheck(Position startPos, Position endPos, bool forWhite)
         {
             Position kingPos = GetKingPosition(forWhite);
@@ -153,54 +175,84 @@ namespace ChessGame
 
             bool stillInCheck = IsSquareUnderAttack(kingPos, !forWhite);
 
+
+            // Відновлюємо дошку
             Board[startPos.Y, startPos.X] = piece;
             Board[endPos.Y, endPos.X] = capturedPiece;
 
             return !stillInCheck;
         }
 
+
+        // Перевіряє, чи є в гравця хоч один дійсний хід
         public bool HasLegalMoves(bool forWhite)
         {
+            // Перебираємо всі клітинки дошки
             for (int startRow = 0; startRow < Size; startRow++)
             {
                 for (int startCol = 0; startCol < Size; startCol++)
                 {
                     Piece piece = Board[startRow, startCol];
-                    if (piece != null && piece.IsWhite == forWhite)
+
+                    if (piece == null || piece.IsWhite != forWhite)
+                        continue;
+
+                    // Перевіряємо всі можливі цільові клітинки для ходу
+                    for (int targetRow = 0; targetRow < Size; targetRow++)
                     {
-                        for (int targetRow = 0; targetRow < Size; targetRow++)
+                        for (int targetCol = 0; targetCol < Size; targetCol++)
                         {
-                            for (int targetCol = 0; targetCol < Size; targetCol++)
-                            {
-                                Position targetPos = new Position(targetCol, targetRow);
-                                if (piece.IsValidMove(targetPos, Board) &&
-                                    (Board[targetRow, targetCol] == null || Board[targetRow, targetCol].IsWhite != piece.IsWhite))
-                                {
-                                    Piece tempPiece = Board[targetRow, targetCol];
-                                    Board[targetRow, targetCol] = piece;
-                                    Board[startRow, startCol] = null;
+                            // Якщо фігура не може легально рухатись на цю клітинку — пропускаємо
+                            if (!CanMove(piece, startRow, startCol, targetRow, targetCol))
+                                continue;
 
-                                    Position originalKingPos = GetKingPosition(forWhite);
-                                    Position kingPosToCheck = piece is King ? targetPos : originalKingPos;
-
-                                    bool wouldBeInCheck = IsSquareUnderAttack(kingPosToCheck, !forWhite);
-
-                                    Board[startRow, startCol] = piece;
-                                    Board[targetRow, targetCol] = tempPiece;
-
-                                    if (!wouldBeInCheck)
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
+                            // Симулюємо хід і перевіряємо, чи не призведе він до шаху
+                            if (IsLegalMove(piece, startRow, startCol, targetRow, targetCol, forWhite))
+                                return true; 
                         }
                     }
                 }
             }
+            // Якщо легальних ходів не знайдено — повертаємо false
             return false;
         }
 
+
+        // Перевіряє, чи фігура може рухатись з початкової в цільову позицію за правилами руху та чи там немає своєї фігури
+        private bool CanMove(Piece piece, int startRow, int startCol, int targetRow, int targetCol)
+        {
+            Piece targetPiece = Board[targetRow, targetCol];
+            Position targetPos = new Position(targetCol, targetRow);
+
+            // Перевірка валідності ходу для фігури та що цільова клітинка або порожня, або з фігурою противника
+            return piece.IsValidMove(targetPos, Board) &&
+                   (targetPiece == null || targetPiece.IsWhite != piece.IsWhite);
+        }
+
+
+        // Симулює хід, перевіряє, чи після нього король не потрапляє під шах, потім відкатує хід
+        private bool IsLegalMove(Piece piece, int startRow, int startCol, int targetRow, int targetCol, bool forWhite)
+        {
+            Piece tempPiece = Board[targetRow, targetCol];
+
+            Board[targetRow, targetCol] = piece;
+            Board[startRow, startCol] = null;
+
+            Position originalKingPos = GetKingPosition(forWhite);
+
+            Position kingPosToCheck = piece is King ? new Position(targetCol, targetRow) : originalKingPos;
+
+            bool wouldBeInCheck = IsSquareUnderAttack(kingPosToCheck, !forWhite);
+
+            Board[startRow, startCol] = piece;
+            Board[targetRow, targetCol] = tempPiece;
+
+            return !wouldBeInCheck;
+        }
+
+
+
+        // Перевірка стану гри: шах, мат, пат
         public void CheckGameState(BoardPanel boardPanel)
         {
             Position kingPos = GetKingPosition(IsWhiteTurn);
@@ -221,6 +273,8 @@ namespace ChessGame
             NotifyGameStateChanged();
         }
 
+
+        // Завершення гри з повідомленням
         public void EndGame(string message, BoardPanel boardPanel)
         {
             GameEnded = true;
@@ -229,15 +283,21 @@ namespace ChessGame
             if (MessageBox.Show("Would you like to start a new game?", "New Game", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 RestartGame();
+
+                // Перемалювати панель
                 boardPanel.Invalidate();
                 if (boardPanel.FindForm() is GameForm gameForm)
                 {
+
+                    // Скинути таймери
                     gameForm.ResetTimers();
                 }
             }
             NotifyGameStateChanged();
         }
 
+
+        // Метод для сповіщення про зміну стану гри
         private void NotifyGameStateChanged()
         {
             GameStateChanged?.Invoke(this, new GameStateChangedEventArgs

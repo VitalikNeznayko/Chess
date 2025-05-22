@@ -13,16 +13,24 @@ namespace ChessGame.Classes.Pieces
 			Icon = icon;
 		}
 
-		public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
-		{
-			bool movesLikeRook = Position.X == endPos.X || Position.Y == endPos.Y;
-			bool movesLikeBishop = Math.Abs(endPos.X - Position.X) == Math.Abs(endPos.Y - Position.Y);
 
-			if (!movesLikeRook && !movesLikeBishop)
+        // Метод перевірки, чи є хід допустимим
+        public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
+		{
+            // Ферзь рухається, як тура (по вертикалі чи горизонталі)
+            bool movesLikeRook = Position.X == endPos.X || Position.Y == endPos.Y;
+
+            // або як слон (по діагоналі — рівна кількість клітин по X і Y)
+            bool movesLikeBishop = Math.Abs(endPos.X - Position.X) == Math.Abs(endPos.Y - Position.Y);
+
+            // Якщо хід не відповідає жодному з варіантів — недійсний
+            if (!movesLikeRook && !movesLikeBishop)
 				return false;
 
 			int stepCol = 0, stepRow = 0;
-			if (movesLikeRook)
+
+            // Обчислення напрямку руху по колонці та рядку
+            if (movesLikeRook)
 			{
 				stepCol = Position.X == endPos.X ? 0 : (endPos.X > Position.X ? 1 : -1);
 				stepRow = Position.Y == endPos.Y ? 0 : (endPos.Y > Position.Y ? 1 : -1);
@@ -33,25 +41,31 @@ namespace ChessGame.Classes.Pieces
 				stepRow = endPos.Y > Position.Y ? 1 : -1;
 			}
 
-			int col = Position.X + stepCol;
+            // Починаємо перевірку клітинок між початковою та кінцевою позиціями
+            int col = Position.X + stepCol;
 			int row = Position.Y + stepRow;
 
 			while (true)
 			{
-				if (col == endPos.X && row == endPos.Y)
+                // Якщо дійшли до кінцевої позиції — вихід з циклу
+                if (col == endPos.X && row == endPos.Y)
 					break;
 
-				if (col < 0 || col >= 8 || row < 0 || row >= 8)
+                // Перевірка на вихід за межі дошки
+                if (col < 0 || col >= 8 || row < 0 || row >= 8)
 					return false;
 
-				if (board[row, col] != null)
+                // Якщо на шляху є фігура — хід недійсний
+                if (board[row, col] != null)
 					return false;
 
-				col += stepCol;
+                // Рухаємося далі в напрямку ходу
+                col += stepCol;
 				row += stepRow;
 			}
 
-			return true;
+            // Якщо шлях чистий — хід допустимий
+            return true;
 		}
 	}
 }

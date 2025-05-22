@@ -6,6 +6,7 @@ namespace ChessGame.Classes.Pieces
     {
         private readonly Dictionary<(PieceType, bool), string> _imagePaths;
 
+
         public PieceFactory()
         {
             _imagePaths = new Dictionary<(PieceType, bool), string>
@@ -26,13 +27,18 @@ namespace ChessGame.Classes.Pieces
         }
         public Piece CreatePiece(PieceType type, Position position, bool isWhite)
         {
+
+            // Перевірка, чи існує шлях до зображення для вказаного типу та кольору
             if (!_imagePaths.TryGetValue((type, isWhite), out string imagePath))
             {
                 throw new ArgumentException($"No image for the shape {type} color {(isWhite ? "white" : "black")}");
             }
 
+            // Завантаження зображення з файлу
             Image icon = Image.FromFile(imagePath);
 
+
+            // Створення відповідного об'єкта фігури залежно від типу
             return type switch
             {
                 PieceType.King => new King(position, isWhite, icon),
