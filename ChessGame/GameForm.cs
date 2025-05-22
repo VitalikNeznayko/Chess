@@ -15,6 +15,7 @@ namespace ChessGame
         {
             InitializeComponent();
             board = new BoardPanel(60, background);
+            
             ChessPanel.Controls.Add(board);
 
             this.selectedTime = selectedTime; 
@@ -95,6 +96,9 @@ namespace ChessGame
 
         private void btnBackToMenu_Click(object sender, EventArgs e)
         {
+            ChessGame.Instance.RestartGame();
+            gameTimer.Stop();
+
             var mainMenu = new MainForm();
             mainMenu.Show();
             this.Close();

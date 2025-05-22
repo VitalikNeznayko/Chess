@@ -2,39 +2,42 @@
 using ChessGame.Classes.Pieces;
 using System.Xml.Linq;
 
-public class Bishop : Piece
+namespace ChessGame.Classes.Pieces
 {
-	public Bishop(Position position, bool isWhite, Image icon) : base(position, isWhite)
+	public class Bishop : Piece
 	{
-		Name = "Bishop";
-        Icon = icon;
-    }
-
-	public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
-	{
-		if (Math.Abs(endPos.X - Position.X) != Math.Abs(endPos.Y - Position.Y))
-			return false;
-
-		int stepCol = endPos.X > Position.X ? 1 : -1;
-		int stepRow = endPos.Y > Position.Y ? 1 : -1;
-		int col = Position.X + stepCol;
-		int row = Position.Y + stepRow;
-
-		while (true)
+		public Bishop(Position position, bool isWhite, Image icon) : base(position, isWhite)
 		{
-			if (col == endPos.X && row == endPos.Y)
-				break;
-
-			if (col < 0 || col >= 8 || row < 0 || row >= 8)
-				return false;
-
-			if (board[row, col] != null)
-				return false;
-
-			col += stepCol;
-			row += stepRow;
+			Name = "Bishop";
+			Icon = icon;
 		}
 
-		return true;
+		public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
+		{
+			if (Math.Abs(endPos.X - Position.X) != Math.Abs(endPos.Y - Position.Y))
+				return false;
+
+			int stepCol = endPos.X > Position.X ? 1 : -1;
+			int stepRow = endPos.Y > Position.Y ? 1 : -1;
+			int col = Position.X + stepCol;
+			int row = Position.Y + stepRow;
+
+			while (true)
+			{
+				if (col == endPos.X && row == endPos.Y)
+					break;
+
+				if (col < 0 || col >= 8 || row < 0 || row >= 8)
+					return false;
+
+				if (board[row, col] != null)
+					return false;
+
+				col += stepCol;
+				row += stepRow;
+			}
+
+			return true;
+		}
 	}
 }
