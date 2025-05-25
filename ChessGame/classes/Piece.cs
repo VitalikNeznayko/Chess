@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using ChessGame.Classes.Strategies;
+using System.Drawing;
 
 namespace ChessGame.Classes.Pieces
 {
@@ -10,7 +11,10 @@ namespace ChessGame.Classes.Pieces
 		public Image Icon { get; set; }
 		public Position Position { get; private set; }
 
-		protected Piece(Position position, bool isWhite)
+        public IMoveStrategy MoveStrategy { get; set; }
+
+
+        protected Piece(Position position, bool isWhite)
 		{
 			Position = position;
 			IsWhite = isWhite;
@@ -23,6 +27,9 @@ namespace ChessGame.Classes.Pieces
 		}
 
         // Абстрактний метод для перевірки, чи є хід на вказану позицію коректним.
-        public abstract bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false);
-	}
+        public virtual bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
+        {
+            return MoveStrategy?.IsValidMove(Position, endPos, board, IsWhite, isCheckEvaluation) ?? false;
+        }
+    }
 }
