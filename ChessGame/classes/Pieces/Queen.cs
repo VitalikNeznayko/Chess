@@ -1,9 +1,9 @@
-﻿using ChessGame.Classes;
-using ChessGame.Classes.Pieces;
+﻿using Chess.Classes;
+using Chess.Classes.Pieces;
 using System.Xml.Linq;
 
 
-namespace ChessGame.Classes.Pieces
+namespace Chess.Classes.Pieces
 {
 	public class Queen : Piece
 	{

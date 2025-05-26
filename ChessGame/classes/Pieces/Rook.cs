@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace ChessGame.Classes.Pieces
+namespace Chess.Classes.Pieces
 {
     public class Rook : Piece
     {

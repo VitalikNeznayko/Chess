@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-namespace ChessGame.Classes.Pieces
+namespace Chess.Classes.Pieces
 {
 	public class Pawn : Piece
 	{

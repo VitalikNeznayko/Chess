@@ -1,12 +1,17 @@
-﻿
-using ChessGame.Classes.Strategies;
+﻿using Chess.Classes.Pieces;
 using System.Drawing;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ChessGame.Classes.Pieces
+namespace Chess.Classes.Pieces
 {
     public class PieceFactory
     {
         private readonly Dictionary<(PieceType, bool), string> _imagePaths;
+
 
         public PieceFactory()
         {
@@ -26,17 +31,21 @@ namespace ChessGame.Classes.Pieces
                 {(PieceType.Bishop, false), "assets/BlackBishop.png"}
             };
         }
-
         public Piece CreatePiece(PieceType type, Position position, bool isWhite)
         {
+
+            // Перевірка, чи існує шлях до зображення для вказаного типу та кольору
             if (!_imagePaths.TryGetValue((type, isWhite), out string imagePath))
             {
                 throw new ArgumentException($"No image for the shape {type} color {(isWhite ? "white" : "black")}");
             }
 
+            // Завантаження зображення з файлу
             Image icon = Image.FromFile(imagePath);
 
-            Piece piece = type switch
+
+            // Створення відповідного об'єкта фігури залежно від типу
+            return type switch
             {
                 PieceType.King => new King(position, isWhite, icon),
                 PieceType.Knight => new Knight(position, isWhite, icon),
@@ -46,19 +55,6 @@ namespace ChessGame.Classes.Pieces
                 PieceType.Bishop => new Bishop(position, isWhite, icon),
                 _ => throw new ArgumentException("Unknown shape type")
             };
-
-            piece.MoveStrategy = type switch
-            {
-                PieceType.King => new KingMoveStrategy(),
-                PieceType.Knight => new KnightMoveStrategy(),
-                PieceType.Pawn => new PawnMoveStrategy(),
-                PieceType.Queen => new QueenMoveStrategy(),
-                PieceType.Rook => new RookMoveStrategy(),
-                PieceType.Bishop => new BishopMoveStrategy(),
-                _ => null
-            };
-
-            return piece;
         }
     }
 }

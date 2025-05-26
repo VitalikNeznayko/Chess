@@ -1,7 +1,8 @@
-using ChessGame.Classes;
+using Chess.Classes;
+using ChessGame;
 using WinFormsTimer = System.Windows.Forms.Timer;
 
-namespace ChessGame
+namespace Chess
 {
     public partial class GameForm : Form
     {

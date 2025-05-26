@@ -1,8 +1,8 @@
-﻿using ChessGame.Classes;
-using ChessGame.Classes.Pieces;
+﻿using Chess.Classes.Pieces;
+using Chess.Classes;
 using System.Xml.Linq;
 
-namespace ChessGame.Classes.Pieces
+namespace Chess.Classes.Pieces
 {
 	public class Bishop : Piece
 	{

@@ -1,4 +1,5 @@
-﻿using ChessGame.Classes;
+﻿using Chess;
+using Chess.Classes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
