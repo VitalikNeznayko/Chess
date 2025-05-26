@@ -16,13 +16,12 @@ namespace Chess.Classes
         private readonly Font coordinateFont = new Font("Arial", 12, FontStyle.Bold);
 
 
-        // Кисті для заливки клітинок
+        // Brushes for cell filling
         private Brush lightBrush;
         private Brush darkBrush;
         private Brush backgroundBrush;
 
-
-        // Кольори підсвічування
+        // Colors for highlighting
         private readonly struct HighlightStyles
         {
             public static readonly Brush Check = new SolidBrush(Color.FromArgb(255, 200, 0, 0));
@@ -30,7 +29,6 @@ namespace Chess.Classes
             public static readonly Brush ValidMove = new SolidBrush(Color.FromArgb(255, 185, 155, 255));
             public static readonly Brush CaptureMove = new SolidBrush(Color.FromArgb(255, 50, 180, 50));
         }
-
 
         public BoardPanel(int cellSize = 60, string background = "default")
         {
@@ -45,8 +43,7 @@ namespace Chess.Classes
             ChessGame.Instance.GameStateChanged += OnGameStateChanged;
         }
 
-
-        // Встановлення колірної теми дошки
+        // Set the board's color theme
         private void SetTheme(string background)
         {
             switch (background.ToLower())
@@ -74,27 +71,22 @@ namespace Chess.Classes
             }
         }
 
-
-        // Подія зміни стану гри
+        // Handle game state change event
         private void OnGameStateChanged(object sender, ChessGame.GameStateChangedEventArgs e)
         {
-            // Перемальовуємо дошку
-            Invalidate(); 
+            Invalidate();
         }
 
-
-        // Метод малювання всієї панелі
+        // Paint the entire panel
         private void Board_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             g.FillRectangle(backgroundBrush, 0, 0, Width, Height);
-
             DrawBoard(g);
             DrawCoordinates(g);
         }
 
-
-        // Малювання клітинок та фігур
+        // Simplified method to draw the board
         private void DrawBoard(Graphics g)
         {
             var board = ChessGame.Instance.Board;
@@ -104,34 +96,14 @@ namespace Chess.Classes
             {
                 for (int col = 0; col < Size; col++)
                 {
-                    Brush cellBrush = (row + col) % 2 == 0 ? lightBrush : darkBrush;
+                    // Determine the brush for the cell (base color or highlight)
+                    Brush cellBrush = GetCellHighlightBrush(row, col, board, isKingInCheck);
                     DrawCell(g, col, row, cellBrush);
 
-                    // Підсвітити короля, якщо шах
-                    if (board[row, col] is King && board[row, col].IsWhite == ChessGame.Instance.IsWhiteTurn && isKingInCheck)
-                    {
-                        DrawCell(g, col, row, HighlightStyles.Check);
-                    }
-
-                    // Підсвітити останній хід
-                    if (ChessGame.Instance.LastMove.HasValue)
-                    {
-                        var (fromPos, toPos) = ChessGame.Instance.LastMove.Value;
-                        if ((row == fromPos.Y && col == fromPos.X) || (row == toPos.Y && col == toPos.X))
-                        {
-                            DrawCell(g, col, row, HighlightStyles.LastMove);
-                        }
-                    }
-
-                    // Підсвітити можливі ходи
-                    if (selectedPiece != null)
-                    {
-                        DrawValidMoves(g, row, col, board, isKingInCheck);
-                    }
-
+                    // Draw cell border
                     g.DrawRectangle(Pens.White, col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
 
-                    // Малювання фігури
+                    // Draw piece if present
                     if (board[row, col] != null)
                     {
                         g.DrawImage(board[row, col].Icon, col * cellSize + CoordinateOffset + 5, row * cellSize + CoordinateOffset + 5, 50, 50);
@@ -140,46 +112,66 @@ namespace Chess.Classes
             }
         }
 
+        // Determine the highlight brush for a cell
+        private Brush GetCellHighlightBrush(int row, int col, Piece[,] board, bool isKingInCheck)
+        {
+            // Default cell color
+            Brush cellBrush = (row + col) % 2 == 0 ? lightBrush : darkBrush;
+
+            // Highlight king in check
+            if (board[row, col] is King && board[row, col].IsWhite == ChessGame.Instance.IsWhiteTurn && isKingInCheck)
+            {
+                return HighlightStyles.Check;
+            }
+
+            // Highlight last move
+            if (ChessGame.Instance.LastMove.HasValue)
+            {
+                var (fromPos, toPos) = ChessGame.Instance.LastMove.Value;
+                if ((row == fromPos.Y && col == fromPos.X) || (row == toPos.Y && col == toPos.X))
+                {
+                    return HighlightStyles.LastMove;
+                }
+            }
+
+            // Highlight valid moves for selected piece
+            if (selectedPiece != null)
+            {
+                Position startPos = selectedPiece;
+                Position endPos = new Position(col, row);
+                Piece piece = board[startPos.Y, startPos.X];
+
+                if (piece != null && piece.IsValidMove(endPos, board) &&
+                    (board[row, col] == null || board[row, col].IsWhite != piece.IsWhite))
+                {
+                    bool isKingMove = piece is King;
+                    bool isTargetSafe = !ChessGame.Instance.IsSquareUnderAttack(endPos, !piece.IsWhite);
+
+                    if (isKingMove && isTargetSafe)
+                    {
+                        return board[row, col] != null && board[row, col].IsWhite != piece.IsWhite
+                            ? HighlightStyles.CaptureMove
+                            : HighlightStyles.ValidMove;
+                    }
+                    else if (!isKingInCheck || ChessGame.Instance.IsMoveResolvingCheck(startPos, endPos, piece.IsWhite))
+                    {
+                        return board[row, col] != null && board[row, col].IsWhite != piece.IsWhite
+                            ? HighlightStyles.CaptureMove
+                            : HighlightStyles.ValidMove;
+                    }
+                }
+            }
+
+            return cellBrush;
+        }
+
+        // Draw a single cell
         private void DrawCell(Graphics g, int col, int row, Brush brush)
         {
             g.FillRectangle(brush, col * cellSize + CoordinateOffset, row * cellSize + CoordinateOffset, cellSize, cellSize);
         }
 
-
-        // Малювання можливих ходів
-        private void DrawValidMoves(Graphics g, int row, int col, Piece[,] board, bool isKingInCheck)
-        {
-            Position startPos = selectedPiece;
-            Position endPos = new Position(col, row);
-            Chess.Classes.Pieces.Piece piece = board[startPos.Y, startPos.X];
-
-            if (piece == null || !piece.IsValidMove(endPos, board) ||
-                (board[row, col] != null && board[row, col].IsWhite == piece.IsWhite))
-            {
-                return;
-            }
-
-            bool isKingMove = piece is King;
-            bool isTargetSafe = !ChessGame.Instance.IsSquareUnderAttack(endPos, !piece.IsWhite);
-
-            if (isKingMove)
-            {
-                Brush highlightBrush = board[row, col] != null && board[row, col].IsWhite != piece.IsWhite
-                    ? HighlightStyles.CaptureMove
-                    : HighlightStyles.ValidMove;
-                DrawCell(g, col, row, highlightBrush);
-            }
-            else if (!isKingInCheck || ChessGame.Instance.IsMoveResolvingCheck(startPos, endPos, piece.IsWhite))
-            {
-                Brush highlightBrush = board[row, col] != null && board[row, col].IsWhite != piece.IsWhite
-                    ? HighlightStyles.CaptureMove
-                    : HighlightStyles.ValidMove;
-                DrawCell(g, col, row, highlightBrush);
-            }
-        }
-
-
-        // Малювання координат навколо дошки
+        // Draw coordinates around the board
         private void DrawCoordinates(Graphics g)
         {
             using (Brush textBrush = new SolidBrush(Color.Black))
@@ -200,8 +192,7 @@ namespace Chess.Classes
             }
         }
 
-
-        // Обробка кліку миші по дошці
+        // Handle mouse click on the board
         private void BoardPanel_MouseClick(object sender, MouseEventArgs e)
         {
             if (ChessGame.Instance.GameEnded)
@@ -224,8 +215,7 @@ namespace Chess.Classes
             }
         }
 
-
-        // Отримання позиції, по якій клікнули
+        // Get the clicked position
         private Position GetClickedPosition(int x, int y)
         {
             int clickedRow = (y - CoordinateOffset) / cellSize;
@@ -233,26 +223,23 @@ namespace Chess.Classes
             return new Position(clickedCol, clickedRow);
         }
 
-
-        // Перевірка, чи координати у межах дошки
+        // Check if the position is within the board
         private bool IsValidPosition(Position pos)
         {
             return pos.X >= 0 && pos.X < Size && pos.Y >= 0 && pos.Y < Size;
         }
 
-
-        // Виділення фігури, якщо вона своя
+        // Select a piece if it belongs to the current player
         private void SelectPiece(Position pos, Piece[,] board)
         {
             if (board[pos.Y, pos.X] != null && board[pos.Y, pos.X].IsWhite == ChessGame.Instance.IsWhiteTurn)
             {
                 selectedPiece = pos;
-                Invalidate(); 
+                Invalidate();
             }
         }
 
-
-        // Спроба зробити хід
+        // Attempt to make a move
         private void TryMakeMove(Position startPos, Position endPos, Piece[,] board)
         {
             Piece piece = board[startPos.Y, startPos.X];
@@ -260,7 +247,7 @@ namespace Chess.Classes
             if (piece == null || !IsValidMove(startPos, endPos, board))
                 return;
 
-            if (piece is King king)
+            if (piece is King)
             {
                 if (ChessGame.Instance.IsCastlingMove(startPos, endPos, board))
                 {
@@ -277,8 +264,7 @@ namespace Chess.Classes
             }
         }
 
-
-        // Перевірка, чи хід допустимий
+        // Check if a move is valid
         private bool IsValidMove(Position startPos, Position endPos, Piece[,] board)
         {
             Piece piece = board[startPos.Y, startPos.X];
@@ -287,8 +273,7 @@ namespace Chess.Classes
                    (board[endPos.Y, endPos.X] == null || board[endPos.Y, endPos.X].IsWhite != piece.IsWhite);
         }
 
-
-        // Обробка ходу короля з перевіркою на безпеку
+        // Handle king moves with safety checks
         private void HandleKingMove(Position startPos, Position endPos, Piece[,] board)
         {
             Piece piece = board[startPos.Y, startPos.X];
@@ -313,15 +298,12 @@ namespace Chess.Classes
             }
         }
 
-
-        // Обробка звичайного ходу  
+        // Handle regular moves
         private void HandleRegularMove(Position startPos, Position endPos, Piece[,] board)
         {
             Piece piece = board[startPos.Y, startPos.X];
             bool isKingInCheck = ChessGame.Instance.IsKingInCheck(piece.IsWhite);
 
-
-            // Реалізація ходу для фігур, що не є королем
             if (!isKingInCheck || ChessGame.Instance.IsMoveResolvingCheck(startPos, endPos, piece.IsWhite))
             {
                 Piece capturedPiece = board[endPos.Y, endPos.X];
@@ -347,8 +329,7 @@ namespace Chess.Classes
             }
         }
 
-
-        // Метод, який виконує хід 
+        // Execute a move
         private void ExecuteMove(Position startPos, Position endPos, Piece[,] board)
         {
             Piece piece = board[startPos.Y, startPos.X];
@@ -367,7 +348,7 @@ namespace Chess.Classes
 
             if (piece is King k) k.HasMoved = true;
             if (piece is Rook r) r.HasMoved = true;
-
         }
     }
 }
+
