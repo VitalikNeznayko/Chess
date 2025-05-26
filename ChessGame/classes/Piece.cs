@@ -8,7 +8,8 @@ namespace Chess.Classes.Pieces
         public bool IsWhite { get; set; }
 		public string Name { get; set; }
 		public Image Icon { get; set; }
-		public Position Position { get; private set; }
+        public bool HasMoved { get; set; } = false;
+        public Position Position { get; private set; }
 
 		protected Piece(Position position, bool isWhite)
 		{

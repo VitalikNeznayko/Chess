@@ -1,7 +1,6 @@
-﻿using Chess.Classes;
-using Chess.Classes.Pieces;
+﻿using Chess.Classes.Pieces;
+using Chess.Classes;
 using System.Xml.Linq;
-
 
 namespace Chess.Classes.Pieces
 {
@@ -17,12 +16,34 @@ namespace Chess.Classes.Pieces
         public override bool IsValidMove(Position endPos, Piece[,] board, bool isCheckEvaluation = false)
         {
 
-            // Обчислюємо абсолютне зміщення по колонках і рядках
-            int deltaCol = Math.Abs(endPos.X - Position.X);
-            int deltaRow = Math.Abs(endPos.Y - Position.Y);
+            int dx = Math.Abs(endPos.X - Position.X);
+            int dy = Math.Abs(endPos.Y - Position.Y);
 
-            // Король може ходити на 1 клітинку в будь-якому напрямку, окрім того, де не рухається
-            return deltaCol <= 1 && deltaRow <= 1 && (deltaCol != 0 || deltaRow != 0);
+            // Звичайний хід короля
+            if ((dx <= 1 && dy <= 1) && (dx + dy > 0))
+                return true;
+
+            // Рокіровка
+            if (!HasMoved && dy == 0 && dx == 2)
+            {
+                int direction = endPos.X > Position.X ? 1 : -1;
+                int rookX = direction == 1 ? 7 : 0;
+                Piece rook = board[Position.Y, rookX];
+
+                if (rook is Rook r && !r.HasMoved && r.IsWhite == this.IsWhite)
+                {
+                    // Перевірити, що всі клітини між королем і турою порожні
+                    int min = Math.Min(Position.X, rookX) + 1;
+                    int max = Math.Max(Position.X, rookX) - 1;
+                    for (int x = min; x <= max; x++)
+                        if (board[Position.Y, x] != null)
+                            return false;
+
+                    return true; // Рокіровка можлива
+                }
+            }
+
+            return false;
         }
     }
 }

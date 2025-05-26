@@ -2,6 +2,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Chess.Classes;
+
 
 namespace Chess.Classes
 {
@@ -74,7 +76,7 @@ namespace Chess.Classes
 
 
         // Подія зміни стану гри
-        private void OnGameStateChanged(object sender, GameStateChangedEventArgs e)
+        private void OnGameStateChanged(object sender, ChessGame.GameStateChangedEventArgs e)
         {
             // Перемальовуємо дошку
             Invalidate(); 
@@ -149,7 +151,7 @@ namespace Chess.Classes
         {
             Position startPos = selectedPiece;
             Position endPos = new Position(col, row);
-            Piece piece = board[startPos.Y, startPos.X];
+            Chess.Classes.Pieces.Piece piece = board[startPos.Y, startPos.X];
 
             if (piece == null || !piece.IsValidMove(endPos, board) ||
                 (board[row, col] != null && board[row, col].IsWhite == piece.IsWhite))
@@ -258,8 +260,15 @@ namespace Chess.Classes
             if (piece == null || !IsValidMove(startPos, endPos, board))
                 return;
 
-            if (piece is King)
+            if (piece is King king)
             {
+                if (ChessGame.Instance.IsCastlingMove(startPos, endPos, board))
+                {
+                    ChessGame.Instance.PerformCastling(startPos, endPos, board);
+                    Invalidate();
+                    return;
+                }
+
                 HandleKingMove(startPos, endPos, board);
             }
             else
@@ -355,6 +364,10 @@ namespace Chess.Classes
             ChessGame.Instance.LastMove = (startPos, endPos);
             ChessGame.Instance.IsWhiteTurn = !ChessGame.Instance.IsWhiteTurn;
             ChessGame.Instance.CheckGameState(this);
+
+            if (piece is King k) k.HasMoved = true;
+            if (piece is Rook r) r.HasMoved = true;
+
         }
     }
 }
