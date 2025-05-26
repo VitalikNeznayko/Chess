@@ -17,14 +17,10 @@ namespace Chess
         public bool GameEnded;
         private const int Size = 8;
         private readonly PieceFactory _pieceFactory;
-        private readonly GameLogger? _logger;
+        private static GameLogger? _logger;
 
-
-        // Подія для сповіщення про зміну стану гри
         public event EventHandler<GameStateChangedEventArgs> GameStateChanged;
 
-
-        // Клас аргументів події зміни стану гри
         public class GameStateChangedEventArgs : EventArgs
         {
             public bool IsWhiteTurn { get; set; }
@@ -32,8 +28,8 @@ namespace Chess
             public bool IsGameEnded { get; set; }
             public string LastMove { get; set; }
         }
-       
-        private ChessGame(GameLogger logger = null)
+
+        private ChessGame(GameLogger logger)
         {
             Board = new Piece[Size, Size];
             IsWhiteTurn = true;
@@ -45,20 +41,19 @@ namespace Chess
             NotifyGameStateChanged();
         }
 
-        // Публічне властивість для доступу до єдиного екземпляра гри
         public static ChessGame Instance
         {
             get
             {
-                var logger = new GameLogger();
                 if (_instance == null)
-                    _instance = new ChessGame(logger);
+                {
+                    _logger ??= new GameLogger();
+                    _instance = new ChessGame(_logger);
+                }
                 return _instance;
             }
         }
 
-
-        // Метод ініціалізації ігрової дошки зі стандартним розміщенням фігур
         private void InitializeBoard()
         {
             for (int col = 0; col < Size; col++)
@@ -67,29 +62,26 @@ namespace Chess
                 Board[6, col] = _pieceFactory.CreatePiece(PieceType.Pawn, new Position(col, 6), true);
             }
 
-            // Чорні фігури
-            Board[0, 0] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(0, 0), false);
-            Board[0, 1] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(1, 0), false);
-            Board[0, 2] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(2, 0), false);
-            Board[0, 3] = _pieceFactory.CreatePiece(PieceType.Queen, new Position(3, 0), false);
-            Board[0, 4] = _pieceFactory.CreatePiece(PieceType.King, new Position(4, 0), false);
-            Board[0, 5] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(5, 0), false);
-            Board[0, 6] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(6, 0), false);
-            Board[0, 7] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(7, 0), false);
+            SetupBackRank(0, false);
+            SetupBackRank(7, true);
+        }
 
+        private void SetupBackRank(int row, bool isWhite)
+        {
+            PieceType[] order = {
+                PieceType.Rook, PieceType.Knight, PieceType.Bishop, PieceType.Queen,
+                PieceType.King, PieceType.Bishop, PieceType.Knight, PieceType.Rook
+            };
 
-            // Білі фігури
-            Board[7, 0] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(0, 7), true);
-            Board[7, 1] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(1, 7), true);
-            Board[7, 2] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(2, 7), true);
-            Board[7, 3] = _pieceFactory.CreatePiece(PieceType.Queen, new Position(3, 7), true);
-            Board[7, 4] = _pieceFactory.CreatePiece(PieceType.King, new Position(4, 7), true);
-            Board[7, 5] = _pieceFactory.CreatePiece(PieceType.Bishop, new Position(5, 7), true);
-            Board[7, 6] = _pieceFactory.CreatePiece(PieceType.Knight, new Position(6, 7), true);
-            Board[7, 7] = _pieceFactory.CreatePiece(PieceType.Rook, new Position(7, 7), true);
+            for (int col = 0; col < Size; col++)
+            {
+                Board[row, col] = _pieceFactory.CreatePiece(order[col], new Position(col, row), isWhite);
+            }
 
-            WhiteKingPos = new Position(4, 7);
-            BlackKingPos = new Position(4, 0);
+            if (isWhite)
+                WhiteKingPos = new Position(4, row);
+            else
+                BlackKingPos = new Position(4, row);
         }
 
 
