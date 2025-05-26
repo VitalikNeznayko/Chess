@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ChessGame
+namespace Chess
 {
     public class GameLogger
     {

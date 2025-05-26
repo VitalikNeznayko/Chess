@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace ChessGame.Classes.Pieces
+namespace Chess.Classes.Pieces
 {
     public enum PieceType
     {

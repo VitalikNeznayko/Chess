@@ -1,9 +1,9 @@
-﻿using ChessGame.Classes.Pieces;
+﻿using Chess.Classes.Pieces;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace ChessGame.Classes
+namespace Chess.Classes
 {
     public class BoardPanel : Panel
     {
@@ -74,7 +74,7 @@ namespace ChessGame.Classes
 
 
         // Подія зміни стану гри
-        private void OnGameStateChanged(object sender, ChessGame.GameStateChangedEventArgs e)
+        private void OnGameStateChanged(object sender, GameStateChangedEventArgs e)
         {
             // Перемальовуємо дошку
             Invalidate(); 
